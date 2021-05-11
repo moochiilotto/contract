@@ -1,9 +1,9 @@
 /**
- *Submitted for verification at BscScan.com on 2021-05-10
+ *Submitted for verification at BscScan.com on 2021-03-01
 */
 
 /**
- *Submitted for verification at BscScan.com on 2021-05-10
+ *Submitted for verification at BscScan.com on 2021-03-01
 */
 
 /**
@@ -12,7 +12,7 @@
    
    #LIQ+#RFI+#SHIB+#DOGE = #BEE
 
-   #SAFEMOON features:
+   #MOOCHII features:
    3% fee auto add to the liquidity pool to locked forever when selling
    2% fee auto distribute to all holders
    I created a black hole so #Bee token will deflate itself in supply with every transaction
@@ -470,21 +470,21 @@ contract Ownable is Context {
         return _lockTime;
     }
 
-    // //Locks the contract for owner for the amount of time provided
-    // function lock(uint256 time) public virtual onlyOwner {
-    //     _previousOwner = _owner;
-    //     _owner = address(0);
-    //     _lockTime = now + time;
-    //     emit OwnershipTransferred(_owner, address(0));
-    // }
+    //Locks the contract for owner for the amount of time provided
+    function lock(uint256 time) public virtual onlyOwner {
+        _previousOwner = _owner;
+        _owner = address(0);
+        _lockTime = now + time;
+        emit OwnershipTransferred(_owner, address(0));
+    }
     
-    // //Unlocks the contract for owner when _lockTime is exceeds
-    // function unlock() public virtual {
-    //     require(_previousOwner == msg.sender, "You don't have permission to unlock");
-    //     require(now > _lockTime , "Contract is locked until 7 days");
-    //     emit OwnershipTransferred(_owner, _previousOwner);
-    //     _owner = _previousOwner;
-    // }
+    //Unlocks the contract for owner when _lockTime is exceeds
+    function unlock() public virtual {
+        require(_previousOwner == msg.sender, "You don't have permission to unlock");
+        require(now > _lockTime , "Contract is locked until 7 days");
+        emit OwnershipTransferred(_owner, _previousOwner);
+        _owner = _previousOwner;
+    }
 }
 
 // pragma solidity >=0.5.0;
@@ -701,7 +701,6 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 }
 
 
-
 contract SafeMoon is Context, IERC20, Ownable {
     using SafeMath for uint256;
     using Address for address;
@@ -716,15 +715,13 @@ contract SafeMoon is Context, IERC20, Ownable {
     address[] private _excluded;
    
     uint256 private constant MAX = ~uint256(0);
-    uint256 private constant _tTotal = 1000000000 * 10**6 * 10**9;
+    uint256 private _tTotal = 1000000000 * 10**6 * 10**9;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
 
-    string private constant _name = "Moochii";
-    string private constant _symbol = "MOO";
-    uint8 private constant _decimals = 9;
-    
-    address private constant charityAddr = 0x3c8cB169281196737c493AfFA8F49a9d823bB9c5;
+    string private _name = "MOOCHII";
+    string private _symbol = "MOOCHII";
+    uint8 private _decimals = 9;
     
     uint256 public _taxFee = 5;
     uint256 private _previousTaxFee = _taxFee;
@@ -739,14 +736,14 @@ contract SafeMoon is Context, IERC20, Ownable {
     bool public swapAndLiquifyEnabled = true;
     
     uint256 public _maxTxAmount = 5000000 * 10**6 * 10**9;
-    uint256 private constant numTokensSellToAddToLiquidity = 500000 * 10**6 * 10**9;
+    uint256 private numTokensSellToAddToLiquidity = 500000 * 10**6 * 10**9;
     
     event MinTokensBeforeSwapUpdated(uint256 minTokensBeforeSwap);
     event SwapAndLiquifyEnabledUpdated(bool enabled);
     event SwapAndLiquify(
         uint256 tokensSwapped,
         uint256 ethReceived,
-        uint256 tokensIntoLiquidity
+        uint256 tokensIntoLiqudity
     );
     
     modifier lockTheSwap {
@@ -773,15 +770,15 @@ contract SafeMoon is Context, IERC20, Ownable {
         emit Transfer(address(0), _msgSender(), _tTotal);
     }
 
-    function name() public pure  returns (string memory) {
+    function name() public view returns (string memory) {
         return _name;
     }
 
-    function symbol() public pure returns (string memory) {
+    function symbol() public view returns (string memory) {
         return _symbol;
     }
 
-    function decimals() public pure returns (uint8) {
+    function decimals() public view returns (uint8) {
         return _decimals;
     }
 
@@ -795,10 +792,7 @@ contract SafeMoon is Context, IERC20, Ownable {
     }
 
     function transfer(address recipient, uint256 amount) public override returns (bool) {
-        
-        uint shareForCharityWallet = amount/100;
-        _transfer(_msgSender(), recipient, (amount - shareForCharityWallet));
-        _transfer(_msgSender(), charityAddr, shareForCharityWallet);
+        _transfer(_msgSender(), recipient, amount);
         return true;
     }
 
@@ -872,7 +866,7 @@ contract SafeMoon is Context, IERC20, Ownable {
     }
 
     function includeInReward(address account) external onlyOwner() {
-        require(_isExcluded[account], "Account is not excluded");
+        require(_isExcluded[account], "Account is already excluded");
         for (uint256 i = 0; i < _excluded.length; i++) {
             if (_excluded[i] == account) {
                 _excluded[i] = _excluded[_excluded.length - 1];
@@ -921,7 +915,7 @@ contract SafeMoon is Context, IERC20, Ownable {
         emit SwapAndLiquifyEnabledUpdated(_enabled);
     }
     
-     //to receive ETH from uniswapV2Router when swapping
+     //to recieve ETH from uniswapV2Router when swaping
     receive() external payable {}
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
@@ -1072,7 +1066,7 @@ contract SafeMoon is Context, IERC20, Ownable {
         uint256 initialBalance = address(this).balance;
 
         // swap tokens for ETH
-        swapTokensForBnb(half); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
+        swapTokensForEth(half); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
 
         // how much ETH did we just swap into?
         uint256 newBalance = address(this).balance.sub(initialBalance);
@@ -1083,7 +1077,7 @@ contract SafeMoon is Context, IERC20, Ownable {
         emit SwapAndLiquify(half, newBalance, otherHalf);
     }
 
-    function swapTokensForBnb(uint256 tokenAmount) private {
+    function swapTokensForEth(uint256 tokenAmount) private {
         // generate the uniswap pair path of token -> weth
         address[] memory path = new address[](2);
         path[0] = address(this);
@@ -1125,6 +1119,8 @@ contract SafeMoon is Context, IERC20, Ownable {
             _transferFromExcluded(sender, recipient, amount);
         } else if (!_isExcluded[sender] && _isExcluded[recipient]) {
             _transferToExcluded(sender, recipient, amount);
+        } else if (!_isExcluded[sender] && !_isExcluded[recipient]) {
+            _transferStandard(sender, recipient, amount);
         } else if (_isExcluded[sender] && _isExcluded[recipient]) {
             _transferBothExcluded(sender, recipient, amount);
         } else {
