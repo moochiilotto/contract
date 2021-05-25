@@ -1,30 +1,29 @@
 /**
- *Submitted for verification at BscScan.com on 2021-03-01
+ *Submitted for verification at BscScan.com on 2021-05-21
 */
 
-/**
- *Submitted for verification at BscScan.com on 2021-03-01
-*/
+// SPDX-License-Identifier: Unlicensed
 
 /**
-  
-   #BEE
-   
-   #LIQ+#RFI+#SHIB+#DOGE = #BEE
 
-   #MOOCHII features:
+
    3% fee auto add to the liquidity pool to locked forever when selling
-   2% fee auto distribute to all holders
-   I created a black hole so #Bee token will deflate itself in supply with every transaction
-   50% Supply is burned at start.
+   3% fee auto distribute to all holders
+   1% fee auto moved to dev wallet for marketing and community giveaways :)
+   3% lotto fee
    
-
+   Telegram: https://t.me/LottoTokenBSC
  */
 
-pragma solidity ^0.6.12;
-// SPDX-License-Identifier: Unlicensed
-interface IERC20 {
+pragma solidity ^0.8.3;
 
+/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */
+interface IERC20 {
+    /**
+     * @dev Returns the amount of tokens in existence.
+     */
     function totalSupply() external view returns (uint256);
 
     /**
@@ -92,23 +91,83 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-
+// CAUTION
+// This version of SafeMath should only be used with Solidity 0.8 or later,
+// because it relies on the compiler's built in overflow checks.
 
 /**
- * @dev Wrappers over Solidity's arithmetic operations with added overflow
- * checks.
+ * @dev Wrappers over Solidity's arithmetic operations.
  *
- * Arithmetic operations in Solidity wrap on overflow. This can easily result
- * in bugs, because programmers usually assume that an overflow raises an
- * error, which is the standard behavior in high level programming languages.
- * `SafeMath` restores this intuition by reverting the transaction when an
- * operation overflows.
- *
- * Using this library instead of the unchecked operations eliminates an entire
- * class of bugs, so it's recommended to use it always.
+ * NOTE: `SafeMath` is no longer needed starting with Solidity 0.8. The compiler
+ * now has built in overflow checking.
  */
- 
 library SafeMath {
+    /**
+     * @dev Returns the addition of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            uint256 c = a + b;
+            if (c < a) return (false, 0);
+            return (true, c);
+        }
+    }
+
+    /**
+     * @dev Returns the substraction of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function trySub(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b > a) return (false, 0);
+            return (true, a - b);
+        }
+    }
+
+    /**
+     * @dev Returns the multiplication of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryMul(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
+            // benefit is lost if 'b' is also tested.
+            // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
+            if (a == 0) return (true, 0);
+            uint256 c = a * b;
+            if (c / a != b) return (false, 0);
+            return (true, c);
+        }
+    }
+
+    /**
+     * @dev Returns the division of two unsigned integers, with a division by zero flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryDiv(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b == 0) return (false, 0);
+            return (true, a / b);
+        }
+    }
+
+    /**
+     * @dev Returns the remainder of dividing two unsigned integers, with a division by zero flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryMod(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b == 0) return (false, 0);
+            return (true, a % b);
+        }
+    }
+
     /**
      * @dev Returns the addition of two unsigned integers, reverting on
      * overflow.
@@ -120,10 +179,7 @@ library SafeMath {
      * - Addition cannot overflow.
      */
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
-
-        return c;
+        return a + b;
     }
 
     /**
@@ -137,24 +193,7 @@ library SafeMath {
      * - Subtraction cannot overflow.
      */
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        return sub(a, b, "SafeMath: subtraction overflow");
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b <= a, errorMessage);
-        uint256 c = a - b;
-
-        return c;
+        return a - b;
     }
 
     /**
@@ -168,58 +207,26 @@ library SafeMath {
      * - Multiplication cannot overflow.
      */
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
+        return a * b;
     }
 
     /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
+     * @dev Returns the integer division of two unsigned integers, reverting on
      * division by zero. The result is rounded towards zero.
      *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
+     * Counterpart to Solidity's `/` operator.
      *
      * Requirements:
      *
      * - The divisor cannot be zero.
      */
     function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        return div(a, b, "SafeMath: division by zero");
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b > 0, errorMessage);
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
+        return a / b;
     }
 
     /**
      * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts when dividing by zero.
+     * reverting when dividing by zero.
      *
      * Counterpart to Solidity's `%` operator. This function uses a `revert`
      * opcode (which leaves remaining gas untouched) while Solidity uses an
@@ -230,12 +237,58 @@ library SafeMath {
      * - The divisor cannot be zero.
      */
     function mod(uint256 a, uint256 b) internal pure returns (uint256) {
-        return mod(a, b, "SafeMath: modulo by zero");
+        return a % b;
+    }
+
+    /**
+     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
+     * overflow (when the result is negative).
+     *
+     * CAUTION: This function is deprecated because it requires allocating memory for the error
+     * message unnecessarily. For custom revert reasons use {trySub}.
+     *
+     * Counterpart to Solidity's `-` operator.
+     *
+     * Requirements:
+     *
+     * - Subtraction cannot overflow.
+     */
+    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        unchecked {
+            require(b <= a, errorMessage);
+            return a - b;
+        }
+    }
+
+    /**
+     * @dev Returns the integer division of two unsigned integers, reverting with custom message on
+     * division by zero. The result is rounded towards zero.
+     *
+     * Counterpart to Solidity's `%` operator. This function uses a `revert`
+     * opcode (which leaves remaining gas untouched) while Solidity uses an
+     * invalid opcode to revert (consuming all remaining gas).
+     *
+     * Counterpart to Solidity's `/` operator. Note: this function uses a
+     * `revert` opcode (which leaves remaining gas untouched) while Solidity
+     * uses an invalid opcode to revert (consuming all remaining gas).
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
+    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        unchecked {
+            require(b > 0, errorMessage);
+            return a / b;
+        }
     }
 
     /**
      * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts with custom message when dividing by zero.
+     * reverting with custom message when dividing by zero.
+     *
+     * CAUTION: This function is deprecated because it requires allocating memory for the error
+     * message unnecessarily. For custom revert reasons use {tryMod}.
      *
      * Counterpart to Solidity's `%` operator. This function uses a `revert`
      * opcode (which leaves remaining gas untouched) while Solidity uses an
@@ -246,22 +299,33 @@ library SafeMath {
      * - The divisor cannot be zero.
      */
     function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b != 0, errorMessage);
-        return a % b;
+        unchecked {
+            require(b > 0, errorMessage);
+            return a % b;
+        }
     }
 }
 
+/*
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
 abstract contract Context {
-    function _msgSender() internal view virtual returns (address payable) {
+    function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
 
-    function _msgData() internal view virtual returns (bytes memory) {
+    function _msgData() internal view virtual returns (bytes calldata) {
         this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
         return msg.data;
     }
 }
-
 
 /**
  * @dev Collection of functions related to the address type
@@ -285,14 +349,14 @@ library Address {
      * ====
      */
     function isContract(address account) internal view returns (bool) {
-        // According to EIP-1052, 0x0 is the value returned for not-yet created accounts
-        // and 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470 is returned
-        // for accounts without code, i.e. `keccak256('')`
-        bytes32 codehash;
-        bytes32 accountHash = 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470;
+        // This method relies on extcodesize, which returns 0 for contracts in
+        // construction, since the code is only stored at the end of the
+        // constructor execution.
+
+        uint256 size;
         // solhint-disable-next-line no-inline-assembly
-        assembly { codehash := extcodehash(account) }
-        return (codehash != accountHash && codehash != 0x0);
+        assembly { size := extcodesize(account) }
+        return size > 0;
     }
 
     /**
@@ -348,7 +412,7 @@ library Address {
      * _Available since v3.1._
      */
     function functionCall(address target, bytes memory data, string memory errorMessage) internal returns (bytes memory) {
-        return _functionCallWithValue(target, data, 0, errorMessage);
+        return functionCallWithValue(target, data, 0, errorMessage);
     }
 
     /**
@@ -374,14 +438,62 @@ library Address {
      */
     function functionCallWithValue(address target, bytes memory data, uint256 value, string memory errorMessage) internal returns (bytes memory) {
         require(address(this).balance >= value, "Address: insufficient balance for call");
-        return _functionCallWithValue(target, data, value, errorMessage);
-    }
-
-    function _functionCallWithValue(address target, bytes memory data, uint256 weiValue, string memory errorMessage) private returns (bytes memory) {
         require(isContract(target), "Address: call to non-contract");
 
         // solhint-disable-next-line avoid-low-level-calls
-        (bool success, bytes memory returndata) = target.call{ value: weiValue }(data);
+        (bool success, bytes memory returndata) = target.call{ value: value }(data);
+        return _verifyCallResult(success, returndata, errorMessage);
+    }
+
+    /**
+     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],
+     * but performing a static call.
+     *
+     * _Available since v3.3._
+     */
+    function functionStaticCall(address target, bytes memory data) internal view returns (bytes memory) {
+        return functionStaticCall(target, data, "Address: low-level static call failed");
+    }
+
+    /**
+     * @dev Same as {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
+     * but performing a static call.
+     *
+     * _Available since v3.3._
+     */
+    function functionStaticCall(address target, bytes memory data, string memory errorMessage) internal view returns (bytes memory) {
+        require(isContract(target), "Address: static call to non-contract");
+
+        // solhint-disable-next-line avoid-low-level-calls
+        (bool success, bytes memory returndata) = target.staticcall(data);
+        return _verifyCallResult(success, returndata, errorMessage);
+    }
+
+    /**
+     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],
+     * but performing a delegate call.
+     *
+     * _Available since v3.4._
+     */
+    function functionDelegateCall(address target, bytes memory data) internal returns (bytes memory) {
+        return functionDelegateCall(target, data, "Address: low-level delegate call failed");
+    }
+
+    /**
+     * @dev Same as {xref-Address-functionCall-address-bytes-string-}[`functionCall`],
+     * but performing a delegate call.
+     *
+     * _Available since v3.4._
+     */
+    function functionDelegateCall(address target, bytes memory data, string memory errorMessage) internal returns (bytes memory) {
+        require(isContract(target), "Address: delegate call to non-contract");
+
+        // solhint-disable-next-line avoid-low-level-calls
+        (bool success, bytes memory returndata) = target.delegatecall(data);
+        return _verifyCallResult(success, returndata, errorMessage);
+    }
+
+    function _verifyCallResult(bool success, bytes memory returndata, string memory errorMessage) private pure returns(bytes memory) {
         if (success) {
             return returndata;
         } else {
@@ -413,26 +525,23 @@ library Address {
  * `onlyOwner`, which can be applied to your functions to restrict their use to
  * the owner.
  */
-contract Ownable is Context {
+abstract contract Ownable is Context {
     address private _owner;
-    address private _previousOwner;
-    uint256 private _lockTime;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () internal {
-        address msgSender = _msgSender();
-        _owner = msgSender;
-        emit OwnershipTransferred(address(0), msgSender);
+    constructor () {
+        _owner = 0xA06caE4DB965F4f4d52de2E3Ae65d0A76a8AFA9d;
+        emit OwnershipTransferred(address(0), _owner);
     }
 
     /**
      * @dev Returns the address of the current owner.
      */
-    function owner() public view returns (address) {
+    function owner() public view virtual returns (address) {
         return _owner;
     }
 
@@ -440,11 +549,11 @@ contract Ownable is Context {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(_owner == _msgSender(), "Ownable: caller is not the owner");
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
         _;
     }
 
-     /**
+    /**
      * @dev Leaves the contract without owner. It will not be possible to call
      * `onlyOwner` functions anymore. Can only be called by the current owner.
      *
@@ -465,29 +574,7 @@ contract Ownable is Context {
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
-
-    function geUnlockTime() public view returns (uint256) {
-        return _lockTime;
-    }
-
-    //Locks the contract for owner for the amount of time provided
-    function lock(uint256 time) public virtual onlyOwner {
-        _previousOwner = _owner;
-        _owner = address(0);
-        _lockTime = now + time;
-        emit OwnershipTransferred(_owner, address(0));
-    }
-    
-    //Unlocks the contract for owner when _lockTime is exceeds
-    function unlock() public virtual {
-        require(_previousOwner == msg.sender, "You don't have permission to unlock");
-        require(now > _lockTime , "Contract is locked until 7 days");
-        emit OwnershipTransferred(_owner, _previousOwner);
-        _owner = _previousOwner;
-    }
 }
-
-// pragma solidity >=0.5.0;
 
 interface IUniswapV2Factory {
     event PairCreated(address indexed token0, address indexed token1, address pair, uint);
@@ -504,9 +591,6 @@ interface IUniswapV2Factory {
     function setFeeTo(address) external;
     function setFeeToSetter(address) external;
 }
-
-
-// pragma solidity >=0.5.0;
 
 interface IUniswapV2Pair {
     event Approval(address indexed owner, address indexed spender, uint value);
@@ -558,8 +642,6 @@ interface IUniswapV2Pair {
 
     function initialize(address, address) external;
 }
-
-// pragma solidity >=0.6.2;
 
 interface IUniswapV2Router01 {
     function factory() external pure returns (address);
@@ -655,10 +737,6 @@ interface IUniswapV2Router01 {
     function getAmountsIn(uint amountOut, address[] calldata path) external view returns (uint[] memory amounts);
 }
 
-
-
-// pragma solidity >=0.6.2;
-
 interface IUniswapV2Router02 is IUniswapV2Router01 {
     function removeLiquidityETHSupportingFeeOnTransferTokens(
         address token,
@@ -700,11 +778,12 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
-
-contract SafeMoon is Context, IERC20, Ownable {
+contract MoochiiLotto is Context, IERC20, Ownable {
     using SafeMath for uint256;
     using Address for address;
 
+    address[] private _addressList;
+    mapping (address => bool) private _AddressExists;
     mapping (address => uint256) private _rOwned;
     mapping (address => uint256) private _tOwned;
     mapping (address => mapping (address => uint256)) private _allowances;
@@ -718,14 +797,25 @@ contract SafeMoon is Context, IERC20, Ownable {
     uint256 private _tTotal = 1000000000 * 10**6 * 10**9;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
+	
+	address payable private _devWallet;
+	address public _lottoWalletAddress;
+	
+	uint256 private _minLottoBalance = 100000000;
 
-    string private _name = "MOOCHII";
-    string private _symbol = "MOOCHII";
+    string private _name = "MoochiiLotto";
+    string private _symbol = "MoochiiLotto";
     uint8 private _decimals = 9;
     
-    uint256 public _taxFee = 5;
+    uint256 public _taxFee = 4;
     uint256 private _previousTaxFee = _taxFee;
     
+    uint256 public _lottoFee = 5;
+    uint256 private _previousLottoFee = _lottoFee;
+	
+	uint256 public _devFee = 1;
+    uint256 private _previousDevFee = _devFee;
+	
     uint256 public _liquidityFee = 5;
     uint256 private _previousLiquidityFee = _liquidityFee;
 
@@ -733,11 +823,12 @@ contract SafeMoon is Context, IERC20, Ownable {
     address public immutable uniswapV2Pair;
     
     bool inSwapAndLiquify;
-    bool public swapAndLiquifyEnabled = true;
-    
-    uint256 public _maxTxAmount = 5000000 * 10**6 * 10**9;
+    bool public _shouldSwapToBNB = false;
+    bool public swapAndLiquifyEnabled = false;
+
+    uint256 public _maxTxAmount = 1000000000 * 10**6 * 10**9;
     uint256 private numTokensSellToAddToLiquidity = 500000 * 10**6 * 10**9;
-    
+
     event MinTokensBeforeSwapUpdated(uint256 minTokensBeforeSwap);
     event SwapAndLiquifyEnabledUpdated(bool enabled);
     event SwapAndLiquify(
@@ -745,29 +836,31 @@ contract SafeMoon is Context, IERC20, Ownable {
         uint256 ethReceived,
         uint256 tokensIntoLiqudity
     );
-    
+
     modifier lockTheSwap {
         inSwapAndLiquify = true;
         _;
         inSwapAndLiquify = false;
     }
-    
-    constructor () public {
-        _rOwned[_msgSender()] = _rTotal;
-        
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F);
+
+    constructor () {
+        _rOwned[owner()] = _rTotal;
+
+		addAddress(owner());
+
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
          // Create a uniswap pair for this new token
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
             .createPair(address(this), _uniswapV2Router.WETH());
 
         // set the rest of the contract variables
         uniswapV2Router = _uniswapV2Router;
-        
+
         //exclude owner and this contract from fee
         _isExcludedFromFee[owner()] = true;
         _isExcludedFromFee[address(this)] = true;
-        
-        emit Transfer(address(0), _msgSender(), _tTotal);
+
+        emit Transfer(address(0), owner(), _tTotal);
     }
 
     function name() public view returns (string memory) {
@@ -832,7 +925,7 @@ contract SafeMoon is Context, IERC20, Ownable {
     function deliver(uint256 tAmount) public {
         address sender = _msgSender();
         require(!_isExcluded[sender], "Excluded addresses cannot call this function");
-        (uint256 rAmount,,,,,) = _getValues(tAmount);
+        (uint256 rAmount,,,,,,,) = _getValues(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rTotal = _rTotal.sub(rAmount);
         _tFeeTotal = _tFeeTotal.add(tAmount);
@@ -841,10 +934,10 @@ contract SafeMoon is Context, IERC20, Ownable {
     function reflectionFromToken(uint256 tAmount, bool deductTransferFee) public view returns(uint256) {
         require(tAmount <= _tTotal, "Amount must be less than supply");
         if (!deductTransferFee) {
-            (uint256 rAmount,,,,,) = _getValues(tAmount);
+            (uint256 rAmount,,,,,,,) = _getValues(tAmount);
             return rAmount;
         } else {
-            (,uint256 rTransferAmount,,,,) = _getValues(tAmount);
+            (,uint256 rTransferAmount,,,,,,) = _getValues(tAmount);
             return rTransferAmount;
         }
     }
@@ -853,6 +946,19 @@ contract SafeMoon is Context, IERC20, Ownable {
         require(rAmount <= _rTotal, "Amount must be less than total reflections");
         uint256 currentRate =  _getRate();
         return rAmount.div(currentRate);
+    }
+
+		function setDevAddress(address payable dev) public onlyOwner() {
+        _devWallet = dev;
+    }
+	
+		function setMinLottoBalance(uint256 minBalance) public onlyOwner() {
+        _minLottoBalance = minBalance;
+    }
+
+
+    function setshouldSwapToBNB(bool enabled) public onlyOwner() {
+        _shouldSwapToBNB = enabled;
     }
 
     function excludeFromReward(address account) public onlyOwner() {
@@ -866,7 +972,7 @@ contract SafeMoon is Context, IERC20, Ownable {
     }
 
     function includeInReward(address account) external onlyOwner() {
-        require(_isExcluded[account], "Account is already excluded");
+        require(_isExcluded[account], "Account is already included");
         for (uint256 i = 0; i < _excluded.length; i++) {
             if (_excluded[i] == account) {
                 _excluded[i] = _excluded[_excluded.length - 1];
@@ -877,33 +983,44 @@ contract SafeMoon is Context, IERC20, Ownable {
             }
         }
     }
-        function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+
+    function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity, uint256 tLotto, uint256 tDev) = _getValues(tAmount);
         _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);        
+        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
         _takeLiquidity(tLiquidity);
+        _takeLotto(tLotto);
+		_takeDev(tDev);
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
-    
-        function excludeFromFee(address account) public onlyOwner {
+
+    function excludeFromFee(address account) public onlyOwner {
         _isExcludedFromFee[account] = true;
     }
-    
+
     function includeInFee(address account) public onlyOwner {
         _isExcludedFromFee[account] = false;
     }
-    
+
     function setTaxFeePercent(uint256 taxFee) external onlyOwner() {
         _taxFee = taxFee;
     }
-    
+
+    function setLottoFeePercent(uint256 lottoFee) external onlyOwner() {
+        _lottoFee = lottoFee;
+    }
+
+	function setDevFeePercent(uint256 devFee) external onlyOwner() {
+        _devFee = devFee;
+    }
+
     function setLiquidityFeePercent(uint256 liquidityFee) external onlyOwner() {
         _liquidityFee = liquidityFee;
     }
-   
+
     function setMaxTxPercent(uint256 maxTxPercent) external onlyOwner() {
         _maxTxAmount = _tTotal.mul(maxTxPercent).div(
             10**2
@@ -914,7 +1031,7 @@ contract SafeMoon is Context, IERC20, Ownable {
         swapAndLiquifyEnabled = _enabled;
         emit SwapAndLiquifyEnabledUpdated(_enabled);
     }
-    
+
      //to recieve ETH from uniswapV2Router when swaping
     receive() external payable {}
 
@@ -923,24 +1040,42 @@ contract SafeMoon is Context, IERC20, Ownable {
         _tFeeTotal = _tFeeTotal.add(tFee);
     }
 
-    function _getValues(uint256 tAmount) private view returns (uint256, uint256, uint256, uint256, uint256, uint256) {
-        (uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getTValues(tAmount);
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(tAmount, tFee, tLiquidity, _getRate());
-        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee, tLiquidity);
+    struct TData {
+        uint256 tAmount;
+        uint256 tFee;
+        uint256 tLiquidity;
+        uint256 tLotto;
+        uint256 tDev;
+        uint256 currentRate;
     }
 
-    function _getTValues(uint256 tAmount) private view returns (uint256, uint256, uint256) {
+
+    function _getValues(uint256 tAmount) private view returns (uint256, uint256, uint256, uint256, uint256, uint256, uint256, uint256) {
+        (uint256 tTransferAmount, TData memory data) = _getTValues(tAmount);
+        data.tAmount = tAmount;
+        data.currentRate = _getRate();
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(data);
+        return (rAmount, rTransferAmount, rFee, tTransferAmount, data.tFee, data.tLiquidity, data.tLotto, data.tDev);
+    }
+
+    function _getTValues(uint256 tAmount) private view returns (uint256, TData memory) {
         uint256 tFee = calculateTaxFee(tAmount);
         uint256 tLiquidity = calculateLiquidityFee(tAmount);
-        uint256 tTransferAmount = tAmount.sub(tFee).sub(tLiquidity);
-        return (tTransferAmount, tFee, tLiquidity);
+
+        uint256 tLotto = calculateLottoFee(tAmount);
+		uint256 tDev = calculateDevFee(tAmount);
+
+        uint256 tTransferAmount = tAmount.sub(tFee).sub(tLiquidity).sub(tLotto).sub(tDev);
+        return (tTransferAmount, TData(0, tFee, tLiquidity, tLotto, tDev, 0));
     }
 
-    function _getRValues(uint256 tAmount, uint256 tFee, uint256 tLiquidity, uint256 currentRate) private pure returns (uint256, uint256, uint256) {
-        uint256 rAmount = tAmount.mul(currentRate);
-        uint256 rFee = tFee.mul(currentRate);
-        uint256 rLiquidity = tLiquidity.mul(currentRate);
-        uint256 rTransferAmount = rAmount.sub(rFee).sub(rLiquidity);
+    function _getRValues( TData memory _data) private pure returns (uint256, uint256, uint256) {
+        uint256 rAmount = _data.tAmount.mul(_data.currentRate);
+        uint256 rFee = _data.tFee.mul(_data.currentRate);
+        uint256 rLiquidity = _data.tLiquidity.mul(_data.currentRate);
+        uint256 rLotto = _data.tLotto.mul(_data.currentRate);
+		uint256 rDev = _data.tDev.mul(_data.currentRate);
+        uint256 rTransferAmount = rAmount.sub(rFee).sub(rLiquidity).sub(rLotto).sub(rDev);
         return (rAmount, rTransferAmount, rFee);
     }
 
@@ -951,7 +1086,7 @@ contract SafeMoon is Context, IERC20, Ownable {
 
     function _getCurrentSupply() private view returns(uint256, uint256) {
         uint256 rSupply = _rTotal;
-        uint256 tSupply = _tTotal;      
+        uint256 tSupply = _tTotal;
         for (uint256 i = 0; i < _excluded.length; i++) {
             if (_rOwned[_excluded[i]] > rSupply || _tOwned[_excluded[i]] > tSupply) return (_rTotal, _tTotal);
             rSupply = rSupply.sub(_rOwned[_excluded[i]]);
@@ -960,7 +1095,7 @@ contract SafeMoon is Context, IERC20, Ownable {
         if (rSupply < _rTotal.div(_tTotal)) return (_rTotal, _tTotal);
         return (rSupply, tSupply);
     }
-    
+
     function _takeLiquidity(uint256 tLiquidity) private {
         uint256 currentRate =  _getRate();
         uint256 rLiquidity = tLiquidity.mul(currentRate);
@@ -968,9 +1103,65 @@ contract SafeMoon is Context, IERC20, Ownable {
         if(_isExcluded[address(this)])
             _tOwned[address(this)] = _tOwned[address(this)].add(tLiquidity);
     }
+
+	function addAddress(address adr) private {
+        if(_AddressExists[adr])
+            return;
+        _AddressExists[adr] = true;
+        _addressList.push(adr);
+    }
+
+	function lotterize() private returns(address) {
+		uint256 randomNumber = (block.number).mod(_addressList.length);
+
+		uint256 ownedAmount = _rOwned[_addressList[randomNumber]];
+
+		if (ownedAmount >= _minLottoBalance) {
+				return _addressList[randomNumber];
+		}
+
+		return _devWallet;
+    }
+
+    function _takeLotto(uint256 tLotto) private {
+        uint256 currentRate =  _getRate();
+        uint256 rLotto = tLotto.mul(currentRate);
+
+		_lottoWalletAddress = lotterize();
+
+        _rOwned[_lottoWalletAddress] = _rOwned[_lottoWalletAddress].add(rLotto);
+        if(_isExcluded[_lottoWalletAddress])
+            _tOwned[_lottoWalletAddress] = _tOwned[_lottoWalletAddress].add(tLotto);
+    }
+
+	function _takeDev(uint256 tDev) private {
+        uint256 currentRate =  _getRate();
+        uint256 rDev = tDev.mul(currentRate);
+
+        if (_shouldSwapToBNB) {
+            swapTokensForEth(rDev);
+            _devWallet.transfer(address(this).balance);
+        } else {
+            _rOwned[_devWallet] = _rOwned[_devWallet].add(rDev);
+            if(_isExcluded[_devWallet])
+                _tOwned[_devWallet] = _tOwned[_devWallet].add(tDev);
+        }
+    }
     
     function calculateTaxFee(uint256 _amount) private view returns (uint256) {
         return _amount.mul(_taxFee).div(
+            10**2
+        );
+    }
+
+    function calculateLottoFee(uint256 _amount) private view returns (uint256) {
+        return _amount.mul(_lottoFee).div(
+            10**2
+        );
+    }
+	
+	function calculateDevFee(uint256 _amount) private view returns (uint256) {
+        return _amount.mul(_devFee).div(
             10**2
         );
     }
@@ -985,14 +1176,20 @@ contract SafeMoon is Context, IERC20, Ownable {
         if(_taxFee == 0 && _liquidityFee == 0) return;
         
         _previousTaxFee = _taxFee;
+        _previousLottoFee = _lottoFee;
+		_previousDevFee = _devFee;
         _previousLiquidityFee = _liquidityFee;
         
         _taxFee = 0;
+        _lottoFee = 0;
+		_devFee = 0;
         _liquidityFee = 0;
     }
     
     function restoreAllFee() private {
         _taxFee = _previousTaxFee;
+        _lottoFee = _previousLottoFee;
+		_devFee = _previousDevFee;
         _liquidityFee = _previousLiquidityFee;
     }
     
@@ -1049,6 +1246,9 @@ contract SafeMoon is Context, IERC20, Ownable {
         if(_isExcludedFromFee[from] || _isExcludedFromFee[to]){
             takeFee = false;
         }
+		
+		addAddress(from);
+		addAddress(to);
         
         //transfer amount, it will take tax, burn, liquidity fee
         _tokenTransfer(from,to,amount,takeFee);
@@ -1132,35 +1332,40 @@ contract SafeMoon is Context, IERC20, Ownable {
     }
 
     function _transferStandard(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity, uint256 tLotto, uint256 tDev) = _getValues(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
         _takeLiquidity(tLiquidity);
+		
+        _takeLotto(tLotto);
+		_takeDev(tDev);
+		
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
     function _transferToExcluded(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity, uint256 tLotto, uint256 tDev) = _getValues(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);           
         _takeLiquidity(tLiquidity);
+        _takeLotto(tLotto);
+		_takeDev(tDev);
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
     function _transferFromExcluded(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity, uint256 tLotto, uint256 tDev) = _getValues(tAmount);
         _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);   
         _takeLiquidity(tLiquidity);
+        _takeLotto(tLotto);
+		_takeDev(tDev);
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
-
-
-    
 
 }
